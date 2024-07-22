@@ -5,10 +5,10 @@ services:
 
   # catalog-service 컨테이너를 기술하는 섹션
   catalog-service:
+    # catalog-service 는 PostgreSQL 데이터베이스 이후에 시작해야한다.
     depends_on:
       - polar-postgres
     # 컨테이너를 실행하는 데 사용할 이미지
-    # catalog-service 는 PostgreSQL 데이터베이스 이후에 시작해야한다.
     image: "catalog-service"
     # 컨테이너의 이름
     container_name: "catalog-service"
