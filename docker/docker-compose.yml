@@ -34,7 +34,7 @@ services:
 
       # DB 정보
       - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
-      - SPRING_PROFILES_ACTIVE=testdata,integration
+      - SPRING_PROFILES_ACTIVE=testdata
 
   # config-server 컨테이너를 기술하는 섹션
   config-server:
