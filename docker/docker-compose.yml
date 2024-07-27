@@ -5,17 +5,14 @@ services:
 
   # catalog-service 컨테이너를 기술하는 섹션
   catalog-service:
-
     # catalog-service 는 PostgreSQL 데이터베이스 이후에 시작해야한다.
     depends_on:
       - polar-postgres
-
     # 컨테이너를 실행하는 데 사용할 이미지
     image: "catalog-service"
-
     # 컨테이너의 이름
     container_name: "catalog-service"
-
+    platform: linux/amd64
     # 포트 매핑 목록을 위한 섹션
     ports:
       - 9001:9001
@@ -26,14 +23,32 @@ services:
     environment:
       # 메모리 계산을 위한 스레드의 수를 설정하는 패키토 빌드팩 환경 변수
       - BPL_JVM_THREAD_COUNT=50
-
       # 디버그 연결을 수락하기 위한 JVM 설정을 활성화(빌드팩에 의해 제공)
       - BPL_DEBUG_ENABLED=true
       # 디버그 연결은 8001 포트를 통해 받는다.(빌드팩에 의해 제공)
       - BPL_DEBUG_PORT=8001
 
+      # 컨피그 서버 설정
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+      # DB 정보
       - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
       - SPRING_PROFILES_ACTIVE=testdata
+
+  # config-server 컨테이너를 기술하는 섹션
+  config-server:
+    image: "config-server"
+    container_name: "config-server"
+    platform: linux/amd64
+    ports:
+      - 8888:8888
+      - 9888:9888
+    environment:
+      # Buildpacks environment variable to configure the number of threads in memory calculation
+      - BPL_JVM_THREAD_COUNT=50
+      # Buildpacks environment variable to enable debug through a socket on port 9888
+      - BPL_DEBUG_ENABLED=true
+      - BPL_DEBUG_PORT=9888
 
   # polar-postgres 컨테이너를 기술하는 섹션
   polar-postgres:
