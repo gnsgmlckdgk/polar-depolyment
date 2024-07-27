@@ -8,6 +8,7 @@ services:
     # catalog-service 는 PostgreSQL 데이터베이스 이후에 시작해야한다.
     depends_on:
       - polar-postgres
+      - config-server
     # 컨테이너를 실행하는 데 사용할 이미지
     image: "catalog-service"
     # 컨테이너의 이름
@@ -33,7 +34,7 @@ services:
 
       # DB 정보
       - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
-      - SPRING_PROFILES_ACTIVE=testdata
+      - SPRING_PROFILES_ACTIVE=testdata,integration
 
   # config-server 컨테이너를 기술하는 섹션
   config-server:
