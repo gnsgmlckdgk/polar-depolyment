@@ -60,4 +60,6 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=polardb_catalog
+    # 초기화 SQL 스크립트를 컨테이너에 볼륨으로 마운드한다.
+    volumes:
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
