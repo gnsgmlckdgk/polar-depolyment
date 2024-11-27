@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+data:
+  init.sql: |
+    CREATE DATABASE polardb_order;
+# polardb_catalog는 포스트그리 배포 환경변수에서 이미 만들고있어서 order만 추가
+# 배포 환경변수에는 하나만 넣을 수 있어서 컨피그맵을 생성함
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +42,15 @@ spec:
             limits:
               cpu: 200m
               memory: 120Mi
+          volumeMounts:
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: init-script
+          configMap:
+            name: postgres-init-script
+
+          
 
 ---
 
