@@ -1,3 +1,5 @@
+# 쿠버네티스 올리기 전 도커에서 로컬 테스트 용
+
 # 도커 컴포즈 구분 버전
 version: '3.8'
 # 실행할 모든 컨테이너를 나열하는 섹션
@@ -63,3 +65,35 @@ services:
     # 초기화 SQL 스크립트를 컨테이너에 볼륨으로 마운드한다.
     volumes:
       - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # order-service 컨테이너를 기술하는 섹션
+  order-service:
+    # order-service 는 PostgreSQL 데이터베이스 이후에 시작해야한다.
+    depends_on:
+      - polar-postgres
+      - config-server
+    # 컨테이너를 실행하는 데 사용할 이미지
+    image: "order-service"
+    # 컨테이너의 이름
+    container_name: "order-service"
+    platform: linux/amd64
+    # 포트 매핑 목록을 위한 섹션
+    ports:
+      - 9002:9002
+      # JVM이 디버그 연결을 듣는 포트
+      - 8002:8002
+
+    # 환경변수를 나열하는 섹션
+    environment:
+      # 메모리 계산을 위한 스레드의 수를 설정하는 패키토 빌드팩 환경 변수
+      - BPL_JVM_THREAD_COUNT=50
+      # 디버그 연결을 수락하기 위한 JVM 설정을 활성화(빌드팩에 의해 제공)
+      - BPL_DEBUG_ENABLED=true
+      # 디버그 연결은 8002 포트를 통해 받는다.(빌드팩에 의해 제공)
+      - BPL_DEBUG_PORT=8002
+
+      # 컨피그 서버 설정
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+      # DB 정보
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
