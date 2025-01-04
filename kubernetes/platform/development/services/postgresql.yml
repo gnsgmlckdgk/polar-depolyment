@@ -61,10 +61,11 @@ metadata:
   labels:
     db: polar-postgres
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     db: polar-postgres
   ports:
   - protocol: TCP
     port: 5432
     targetPort: 5432
+    nodePort: 30000

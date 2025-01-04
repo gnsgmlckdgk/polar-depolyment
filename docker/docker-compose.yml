@@ -99,3 +99,10 @@ services:
       - SPRING_R2DBC_URL=r2dbc:postgresql://polar-postgres:5432/polardb_order
       # Flyway 설정
       - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
+
+  # 레디스 컨테이너
+  polar-redis:
+    image: "redis:7.0" # 레디스 7.0을 사용한다.
+    container_name: "polar-redis"
+    ports:
+      - 6379:6379 # 6379 포트로 레디스를 노출한다.
